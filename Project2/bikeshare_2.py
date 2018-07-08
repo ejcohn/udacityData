@@ -17,25 +17,27 @@ def get_filters():
     """
     print('Hello! Let\'s explore some US bikeshare data!')
     # get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
-    isValid = False
-    city = ''
-    month = 0
-    day = ''
+    isValid = True
+    city = 'washington'
+    month = 'april'
+    day = 'monday'
     while not isValid:
         city = (input('Enter the city which you want data for: ')).lower()
         if city == 'chicago' or city == 'new york city' or city == 'washington':
             isValid = True
         else:
             print('invalid input, try again')
-    isValid = False
+    #isValid = False
     # get user input for month (all, january, february, ... , june)
     while not isValid:
-        month = int(input('Enter the month which you want data for (by number) '))
-        if month <= 12 and month >= 1:
+        month = input('Enter the month: ').lower()
+        if (month == 'january' or month == 'february' or month == 'march' or month == 'april'
+        or month == 'may' or month == 'june' or month == 'july' or month == 'august'
+        or month == 'september' or month == 'october' or month == 'november' or month == 'december'):
             isValid = True
         else:
             print('invalid input, try again')
-    isValid = False
+    #isValid = False
 
     # get user input for day of week (all, monday, tuesday, ... sunday)
     while not isValid:
@@ -44,7 +46,7 @@ def get_filters():
             isValid = True
         else:
             print('invalid input, try again')
-    isValid = False
+    #isValid = False
 
     print('-'*40)
     return city, month, day
@@ -97,13 +99,13 @@ def time_stats(df):
     start_time = time.time()
 
     # display the most common month
-
+    print('Month: ' + str(df['month'].mode()[0]))
 
     # display the most common day of week
-
+    print('Weekday: ' + df['day_of_week'].mode()[0])
 
     # display the most common start hour
-
+    print('Hour: ' + str(df['Start Time'].dt.hour.mode()[0]))
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -116,13 +118,17 @@ def station_stats(df):
     start_time = time.time()
 
     # display most commonly used start station
-
+    start_station = df['Start Station'].mode()[0]
+    print('Most popular start station: ' + start_station)
 
     # display most commonly used end station
-
+    end_station = df['End Station'].mode()[0]
+    print('Most popular end station: ' + end_station)
 
     # display most frequent combination of start station and end station trip
-
+    df['start_end_intersection'] = 'Start: ' + df['Start Station'] + ', End: ' + df['End Station']
+    start_end_intersection = df['start_end_intersection'].mode()[0]
+    print('Most popular combination of start and end station: ' + start_end_intersection)
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -135,10 +141,19 @@ def trip_duration_stats(df):
     start_time = time.time()
 
     # display total travel time
-
+    total_seconds = df['Trip Duration'].sum() % 60
+    total_minutes = df['Trip Duration'].sum() // 60
+    total_hours = total_minutes // 60
+    extra_minutes = total_minutes % 60
+    result = 'Total time spent travelling: \nhours: {}, minutes: {}, seconds: {}'
+    print(result.format(total_hours, extra_minutes, total_seconds))
 
     # display mean travel time
-
+    mean_total_seconds = df['Trip Duration'].mean()
+    mean_minutes = int(mean_total_seconds // 60)
+    mean_seconds = int(mean_total_seconds % 60)
+    result = 'Mean travel time:\nminutes: {}, seconds: {}'
+    print(result.format(mean_minutes, mean_seconds))
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -151,13 +166,23 @@ def user_stats(df):
     start_time = time.time()
 
     # Display counts of user types
-
+    print(df['User Type'].value_counts())
 
     # Display counts of gender
-
+    if 'Gender' in df.columns:
+        print(df['Gender'].value_counts())
+    else:
+        print('Gender not included in this dataset')
 
     # Display earliest, most recent, and most common year of birth
-
+    if 'Birth Year' in df.columns:
+        earliest_year = df['Birth Year'].min()
+        recent_year = df['Birth Year'].max()
+        common_year = df['Birth Year'].mode()[0]
+        result = 'Earliest year: {}\nMost recent year: {}\nMost common year: {}'
+        print(result.format(earliest_year, recent_year, common_year))
+    else:
+        print('Birth year not included in this dataset')
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
