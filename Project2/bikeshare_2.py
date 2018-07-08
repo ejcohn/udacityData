@@ -17,17 +17,17 @@ def get_filters():
     """
     print('Hello! Let\'s explore some US bikeshare data!')
     # get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
-    isValid = True
-    city = 'washington'
-    month = 'april'
-    day = 'monday'
+    isValid = False
+    city = ''
+    month = ''
+    day = ''
     while not isValid:
-        city = (input('Enter the city which you want data for: ')).lower()
+        input_city = (input('Enter the city which you want data for: ')).lower()
         if city == 'chicago' or city == 'new york city' or city == 'washington':
             isValid = True
         else:
             print('invalid input, try again')
-    #isValid = False
+    isValid = False
     # get user input for month (all, january, february, ... , june)
     while not isValid:
         month = input('Enter the month: ').lower()
@@ -37,7 +37,7 @@ def get_filters():
             isValid = True
         else:
             print('invalid input, try again')
-    #isValid = False
+    isValid = False
 
     # get user input for day of week (all, monday, tuesday, ... sunday)
     while not isValid:
@@ -46,7 +46,7 @@ def get_filters():
             isValid = True
         else:
             print('invalid input, try again')
-    #isValid = False
+    isValid = False
 
     print('-'*40)
     return city, month, day
@@ -65,7 +65,7 @@ def load_data(city, month, day):
     """
 
     # load data file into a dataframe
-    df = pd.read_csv(city + '.csv')
+    df = pd.read_csv(CITY_DATA[city])
 
     # convert the Start Time column to datetime
     df['Start Time'] = pd.to_datetime(df['Start Time'])
@@ -127,8 +127,9 @@ def station_stats(df):
 
     # display most frequent combination of start station and end station trip
     df['start_end_intersection'] = 'Start: ' + df['Start Station'] + ', End: ' + df['End Station']
-    start_end_intersection = df['start_end_intersection'].mode()[0]
-    print('Most popular combination of start and end station: ' + start_end_intersection)
+    start_end_intersection = df['start_end_intersection'].mode()
+    for i in range(len(start_end_intersection)):
+        print('Most popular combination of start and end station: ' + start_end_intersection[i])
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
