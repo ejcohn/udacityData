@@ -22,7 +22,8 @@ def get_filters():
     month = ''
     day = ''
     while not isValid:
-        input_city = (input('Enter the city which you want data for: ')).lower()
+        city = (input('Enter the city which you want data for: ')).lower()
+        print(city)
         if city == 'chicago' or city == 'new york city' or city == 'washington':
             isValid = True
         else:
@@ -30,10 +31,11 @@ def get_filters():
     isValid = False
     # get user input for month (all, january, february, ... , june)
     while not isValid:
-        month = input('Enter the month: ').lower()
+        month = input('Enter the month (if you don\'t want to filter, write all): ').lower()
         if (month == 'january' or month == 'february' or month == 'march' or month == 'april'
         or month == 'may' or month == 'june' or month == 'july' or month == 'august'
-        or month == 'september' or month == 'october' or month == 'november' or month == 'december'):
+        or month == 'september' or month == 'october' or month == 'november' or month == 'december'
+        or month == 'all'):
             isValid = True
         else:
             print('invalid input, try again')
@@ -41,8 +43,9 @@ def get_filters():
 
     # get user input for day of week (all, monday, tuesday, ... sunday)
     while not isValid:
-        day = (input('Enter the day of the week which you want data for ')).lower()
-        if day == 'monday' or day == 'tuesday' or day == 'wednesday' or day == 'thursday' or day == 'friday' or day == 'saturday' or day == 'sunday':
+        day = (input('Enter the day of the week which you want data for (if you don\'t want to filter, write all): ')).lower()
+        if (day == 'monday' or day == 'tuesday' or day == 'wednesday' or day == 'thursday' 
+        or day == 'friday' or day == 'saturday' or day == 'sunday' or day == 'all'):
             isValid = True
         else:
             print('invalid input, try again')
@@ -142,10 +145,10 @@ def trip_duration_stats(df):
     start_time = time.time()
 
     # display total travel time
-    total_seconds = df['Trip Duration'].sum() % 60
+    total_seconds = int(df['Trip Duration'].sum() % 60)
     total_minutes = df['Trip Duration'].sum() // 60
-    total_hours = total_minutes // 60
-    extra_minutes = total_minutes % 60
+    total_hours = int(total_minutes // 60)
+    extra_minutes = int(total_minutes % 60)
     result = 'Total time spent travelling: \nhours: {}, minutes: {}, seconds: {}'
     print(result.format(total_hours, extra_minutes, total_seconds))
 
@@ -167,20 +170,22 @@ def user_stats(df):
     start_time = time.time()
 
     # Display counts of user types
+    print('Different types of users:')
     print(df['User Type'].value_counts())
 
     # Display counts of gender
     if 'Gender' in df.columns:
+        print('\nGender statistics:')
         print(df['Gender'].value_counts())
     else:
         print('Gender not included in this dataset')
 
     # Display earliest, most recent, and most common year of birth
     if 'Birth Year' in df.columns:
-        earliest_year = df['Birth Year'].min()
-        recent_year = df['Birth Year'].max()
-        common_year = df['Birth Year'].mode()[0]
-        result = 'Earliest year: {}\nMost recent year: {}\nMost common year: {}'
+        earliest_year = int(df['Birth Year'].min())
+        recent_year = int(df['Birth Year'].max())
+        common_year = int(df['Birth Year'].mode()[0])
+        result = 'Birth year statistics:\nEarliest year: {}\nMost recent year: {}\nMost common year: {}'
         print(result.format(earliest_year, recent_year, common_year))
     else:
         print('Birth year not included in this dataset')
