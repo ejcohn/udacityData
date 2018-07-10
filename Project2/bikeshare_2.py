@@ -203,6 +203,15 @@ def main():
         station_stats(df)
         trip_duration_stats(df)
         user_stats(df)
+        print(df.columns)
+
+        raw_data = (input('\nWould you like to view raw data? ')).lower()
+        counter = 0
+        while raw_data == 'yes':
+            print(df.iloc[counter : counter + 5])
+            counter += 5
+            raw_data = (input('\nWould you like to view 5 more lines? ')).lower()
+
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
